@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Interface.InterfaceCollection
 {
-    internal interface IEnumerable
+    public interface IMyEnumerable
     {
-        IEnumerator GetEnumerator();
+        IMyEnumerator GetEnumerator();
     }
 }

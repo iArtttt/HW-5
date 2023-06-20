@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Interface.InterfaceCollection
 {
-    internal interface IEnumerator
+    public interface IMyEnumerator
     {
         object Current { get; }
         bool MoveNext();
