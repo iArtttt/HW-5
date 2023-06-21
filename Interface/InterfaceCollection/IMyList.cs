@@ -9,10 +9,9 @@ namespace Interface.InterfaceCollection
     public interface IMyList : IMyCollection
     {
         object? this[int index] { get; set; }
-        int Capasity { get; }
+        int Capaсity { get; }
 
-        void Add(object? value);
-        bool Contains(object? value);
+        void Add(object? value);        
         int IndexOf(object? value);
         void Insert(int index, object? value);
         void Remove(object? value);

@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace Interface.InterfaceCollectionGeneric
 {
-    public interface IMyCollectionGen<T> : IMyEnumerableGen<T>
+    public interface IMyCollection<T> : IEnumerable<T>
     {
         int Count { get; }
+        bool Contains(T? value);
         T[] ToArray();
         void Clear();
     }

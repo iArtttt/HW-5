@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 
 namespace Interface.InterfaceCollectionGeneric
 {
-    public interface IMyListGen<T> : IMyCollectionGen<T>, IMyEnumerableGen<T>//,IMyList
+    public interface IMyList<T> : IMyCollection<T>, IEnumerable<T>
     {
         T? this[int index] { get; set; }
-        int Capasity { get; }
+        int Capaсity { get; }
 
         void Add(T? value);
-        bool Contains(T? value);
         int IndexOf(T? value);
         void Insert(int index, T? value);
         void Remove(T? value);

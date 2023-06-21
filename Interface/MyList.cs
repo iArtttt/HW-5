@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-//using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +9,7 @@ using Interface.InterfaceCollectionGeneric;
 
 namespace Interface
 {
-    internal class MyList<T> : IMyListGen<T>, IMyList
+    internal class MyList<T> : IMyList<T>, IMyList
     {
         public T this[int index] 
         { 
@@ -35,7 +35,7 @@ namespace Interface
 
         private int _size { get; set; } = 4;
 
-        public int Capasity => _size;
+        public int Capaсity => _size;
 
         object? IMyList.this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -75,7 +75,7 @@ namespace Interface
             return false;
         }
 
-        public IMyEnumeratorGen<T> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return new Iterator<T>(this);
         }
@@ -86,7 +86,7 @@ namespace Interface
             {
                 object obj = _arr[i];
 
-                if (obj.GetHashCode() == value.GetHashCode())
+                if (obj.Equals(value))
                     return i;
             }
             return -1;
@@ -129,7 +129,7 @@ namespace Interface
 
         public void RemoveAt(int index)
         {
-            if (index < Capasity && index >= 0)
+            if (index < Capaсity && index >= 0)
             {
                 _arr[index] = default;
                 _arr = ForEach();
@@ -176,35 +176,61 @@ namespace Interface
             return arr;
         }
 
-        #region Realisated
-        IMyEnumerator IMyEnumerable.GetEnumerator()
+        #region IEnumerator implementation
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
         void IMyList.Add(object? value)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Add((T)value);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
-        bool IMyList.Contains(object? value)
+        bool IMyCollection.Contains(object? value)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return Contains((T)value);
+            }
+            catch { return false; }
+
         }
 
         int IMyList.IndexOf(object? value)
         {
-            throw new NotImplementedException();
+            if (value is T)
+            {
+                return IndexOf((T)value!);
+            }
+            return -1;
         }
 
         void IMyList.Insert(int index, object? value)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Insert(index, (T)value!);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         void IMyList.Remove(object? value)
         {
-            throw new NotImplementedException();
+            if (value is T)
+            {
+                Remove((T)value!);
+            }
         }
 
         object[] IMyCollection.ToArray()
@@ -212,7 +238,7 @@ namespace Interface
             throw new NotImplementedException();
         }
         #endregion
-        private class Iterator<T> : IMyEnumeratorGen<T>
+        private class Iterator<T> : IEnumerator<T>
         {
             private readonly MyList<T> _list;
             private int _index;
@@ -226,7 +252,7 @@ namespace Interface
 
             public T Current => _current;
 
-            object IMyEnumerator.Current => Current;
+            object IEnumerator.Current => Current;
 
 
             public void Dispose()
