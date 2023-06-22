@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Interface.InterfaceCollection;
 using Interface.InterfaceCollectionGeneric;
 
-namespace Interface
+namespace Interface.MyCollection
 {
     internal class MyList<T> : IMyList<T>, IMyList
     {
@@ -31,9 +31,9 @@ namespace Interface
 
         public int Count => _count;
 
-        private T[] _arr { get; set; }
+        private T[] _arr;
 
-        private int _size { get; set; } = 4;
+        private int _size = 4;
 
         public int Capaсity => _size;
 
@@ -48,7 +48,7 @@ namespace Interface
             _size = Math.Abs(startCapasity);
             _arr = new T[_size];
         }
-        public void Add(T item)
+        public void Add(T? item)
         {
             if (Count + 1 > _size)
             {
@@ -84,9 +84,9 @@ namespace Interface
         {
             for (int i = 0; i < Count; i++)
             {
-                object obj = _arr[i];
+                T temp = _arr[i];
 
-                if (obj.Equals(value))
+                if (temp.Equals(value))
                     return i;
             }
             return -1;
@@ -101,7 +101,7 @@ namespace Interface
                     _size *= 2;
                     _arr = ForEach();
                 }
-                T temp = _arr[index];
+                T temp;
                 for (int i = index; i < Count + 1; i++)
                 {
                     temp = _arr[i];
@@ -117,7 +117,7 @@ namespace Interface
         {
             for (int i = 0; i < Count; i++)
             {
-                if (_arr[i].GetHashCode() == value.GetHashCode())
+                if (_arr[i].Equals(value))
                 {
                     _arr[i] = default;
                     _arr = ForEach();

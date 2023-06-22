@@ -1,5 +1,6 @@
 ﻿using Interface.InterfaceCollection;
 using Interface.InterfaceCollectionGeneric;
+using Interface.MyCollection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,54 +12,6 @@ namespace Interface
 {
     internal static class MyLinq
     {
-        abstract class Iterator<U> : IEnumerable<U>, IEnumerator<U>
-        {
-            internal int state;
-            internal U current;
-
-            public U Current
-            {
-                get { return current; }
-            }
-
-            public abstract Iterator<U> Clone();
-
-            public virtual void Dispose()
-            {
-                current = default(U);
-                state = -1;
-            }
-
-            public IEnumerator<U> GetEnumerator()
-            {
-                if (state == 0)
-                {
-                    state = 1;
-                    return this;
-                }
-                Iterator<U> duplicate = Clone();
-                duplicate.state = 1;
-                return duplicate;
-            }
-
-            public abstract bool MoveNext();
-
-            public abstract IEnumerable<T> Select<T>(Func<U, T> selector);
-            object IEnumerator.Current
-            {
-                get { return Current; }
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            void IEnumerator.Reset()
-            {
-                throw new NotImplementedException();
-            }
-        }
         private class BaseEnumerable<T> : IEnumerable<T>
         {
             private readonly Func<IEnumerator<T>> _enumerator;
@@ -202,7 +155,6 @@ namespace Interface
                     _count--;
                     return _list.MoveNext();
                 }
-                //_list.MoveNext();
                 return false;
             }
 
@@ -234,8 +186,6 @@ namespace Interface
             {
                 bool res;
                 res = _list.MoveNext();
-                //if (_predicate(Current) && res)
-                //    return res;
                 return _predicate(Current) && res;
             }
 
@@ -245,51 +195,34 @@ namespace Interface
             }
         }
 
-        static Func<TSource, TResult> CombineSelectors<TSource, TMiddle, TResult>(Func<TSource, TMiddle> selector1, Func<TMiddle, TResult> selector2)
+        private class SelectIterator<T, U> : IEnumerator<U>
         {
-            return x => selector2(selector1(x));
-        }
-
-        private class SelectIterator<T, U> : Iterator<U>
-        {
-            private readonly IEnumerable<T> _list;
-            private IEnumerator<T?> _enumerator;
+            private readonly IEnumerator<T?> _enumerator;
             private readonly Func<T, U> _func;
-            private U _current;
 
-            public SelectIterator(IEnumerable<T> list, Func<T, U> func)
+            public SelectIterator(IEnumerable<T> enumerator, Func<T, U> func)
             {
-                _list = list;
+                _enumerator = enumerator.GetEnumerator();
                 _func = func;
             }
 
-            public T Current => _enumerator.Current;
+            public U Current => _func(_enumerator.Current);
 
-            //object IEnumerator.Current => Current;
+            object IEnumerator.Current => Current;
 
-            public override Iterator<U> Clone() =>
-                new SelectIterator<T, U>(_list, _func);
-
-            public override void Dispose()
+            public void Dispose()
             {
             }
 
-            public override bool MoveNext()
+            public bool MoveNext()
             {
-                bool res;
-                _enumerator = _list.GetEnumerator();
-                res = _enumerator.MoveNext();
-                if (res)
-                    _current = _func(Current);
-                return res;
+                return _enumerator.MoveNext();
             }
 
             public void Reset()
             {
 
             }
-
-            public override IEnumerable<U1> Select<U1>(Func<U, U1> selector) => new SelectIterator<T, U1>(_list, CombineSelectors(_func, selector));
         }
 
         public static IEnumerable<T> Filter<T>(this IEnumerable<T> enumeration, Predicate<T?> predicate)
@@ -369,7 +302,7 @@ namespace Interface
 
         public static IEnumerable<U> Select<T, U>(this IEnumerable<T> enumeration, Func<T, U> func)
         {
-            return new SelectIterator<T, U>(enumeration, func);
+            return new BaseEnumerable<U>(() => new SelectIterator<T, U>(enumeration, func));
         }
 
         public static bool All<T>(this IEnumerable<T> enumeration, Predicate<T?> predicate)
@@ -408,7 +341,7 @@ namespace Interface
         {
             MyList<T> arr = new MyList<T>();
 
-            foreach (T item in enumeration)
+            foreach (var item in enumeration)
             {
                 arr.Add(item);
             }
