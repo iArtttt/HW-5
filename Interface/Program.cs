@@ -1,4 +1,5 @@
 ﻿using Interface.MyCollection;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 
 namespace Interface
@@ -7,7 +8,8 @@ namespace Interface
     {
         static void Main(string[] args)
         {
-
+         
         }
+        
     }
 }

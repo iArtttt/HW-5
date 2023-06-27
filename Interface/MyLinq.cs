@@ -4,6 +4,7 @@ using Interface.MyCollection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -225,6 +226,69 @@ namespace Interface
             }
         }
 
+        private sealed partial class SelectManyIterator<T, U> : IEnumerator<U>
+        {
+            private readonly IEnumerator<T> _source;
+            private readonly Func<T, IEnumerable<U>> _selector;
+            private IEnumerator<U>? _subEnumerator;
+            private int _state = 1;
+            private U? _current;
+
+            public U Current => _current;
+
+            object IEnumerator.Current => Current;
+
+            internal SelectManyIterator(IEnumerable<T> source, Func<T, IEnumerable<U>> selector)
+            {
+                _source = source.GetEnumerator();
+                _selector = selector;
+            }
+            public void Dispose()
+            {
+                if (_subEnumerator != null)
+                {
+                    _subEnumerator.Dispose();
+                    _subEnumerator = null;
+                }
+
+            }
+
+            public bool MoveNext()
+            {
+                if (!InnerMoveNext())
+                {
+                    while (_source.MoveNext())
+                    {
+                        _subEnumerator = _selector(_source.Current).GetEnumerator();
+                        InnerMoveNext();
+                        return true;
+                    }
+                }
+
+                return _subEnumerator != null;
+            }
+            private bool InnerMoveNext()
+            {
+                if (_subEnumerator != null)
+                {
+                    while (_subEnumerator.MoveNext())
+                    {
+                        _current = _subEnumerator.Current;
+                        return true;
+                    }
+                    _subEnumerator = null;
+                }
+                return false;
+            }
+
+            public void Reset()
+            {
+                
+            }
+        }
+
+
+
         public static IEnumerable<T> Filter<T>(this IEnumerable<T> enumeration, Predicate<T?> predicate)
         {
             return new BaseEnumerable<T>(() => new FilterIterator<T>(enumeration, predicate));
@@ -303,6 +367,10 @@ namespace Interface
         public static IEnumerable<U> Select<T, U>(this IEnumerable<T> enumeration, Func<T, U> func)
         {
             return new BaseEnumerable<U>(() => new SelectIterator<T, U>(enumeration, func));
+        }
+        public static IEnumerable<U> SelectToMany<T, U>(this IEnumerable<T> enumeration, Func<T, IEnumerable<U>> func)
+        {
+            return new BaseEnumerable<U>(() => new SelectManyIterator<T, U>(enumeration, func));
         }
 
         public static bool All<T>(this IEnumerable<T> enumeration, Predicate<T?> predicate)

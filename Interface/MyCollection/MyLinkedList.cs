@@ -83,7 +83,7 @@ namespace Interface.MyCollection
                 MyLinkedListNode<T>? current = _head;
                 for (int i = 0; i < Count; i++)
                 {
-                    if (current.Item.GetHashCode() == item.GetHashCode())
+                    if (current.Item.Equals(item))
                     {
                         if (current == _head)
                             RemoveFirst();

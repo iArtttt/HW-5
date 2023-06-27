@@ -1,31 +1,49 @@
-﻿using Interface.InterfaceCollection;
-using Interface.InterfaceCollectionGeneric;
+﻿using Interface.InterfaceCollectionGeneric;
 using System;
 using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Interface.MyCollection
 {
-    internal class MyQueue<T> : IMyCollection<T>
+    internal class MyPriorityQueue<T> : IMyCollection<T>
     {
-        public int Count { get { return _arr.Count; } }
+        public int Count => _arr.Count;
 
         private readonly MyList<T> _arr;
-        public MyQueue()
+        private readonly IComparer<T>? _priority = null;
+        public MyPriorityQueue()
         {
             _arr = new MyList<T>();
         }
-        public void Enqueue(T obj) => _arr.Add(obj);
+        public MyPriorityQueue(IComparer<T>? priority)
+        {
+            _arr = new MyList<T>();
+            _priority = priority;
+        }
+
+        public void Enqueue(T item)
+        {
+            if (_priority == null)
+            {
+                _arr.Add(item);
+                _arr.Sort();
+            }
+            else
+            {
+                _arr.Add(item);
+                _arr.Sort(_priority);
+            }
+        } 
 
         public T Dequeue()
         {
             if (_arr.Count > 0)
             {
-                T obj = _arr[0];
+                T item = _arr[0];
                 _arr.RemoveAt(0);
-                return obj;
+                return item;
             }
             return default;
         }
@@ -36,16 +54,17 @@ namespace Interface.MyCollection
             return default;
         }
 
-        public bool Contains(T? item) => _arr.Contains(item);
 
-        public T[] ToArray() => _arr.ToArray();
-
-        public void Clear() => _arr.Clear();
+        public bool Contains(T? value) => _arr.Contains(value);
 
         public IEnumerator<T> GetEnumerator() => _arr.GetEnumerator();
 
+        public void Clear() => _arr.Clear();
+
+        public T[] ToArray() => _arr.ToArray();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
         private class Iterator<T> : IEnumerator<T>
         {
             private readonly MyList<T> _list;

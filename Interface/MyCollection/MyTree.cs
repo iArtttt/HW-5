@@ -108,16 +108,12 @@ namespace Interface.MyCollection
         }
         public struct Enumerator : IEnumerator<T>, IEnumerator
         {
-            private readonly MyTree<T> _tree;
-            private MyTreeNode<T>? _node;
-            private MyTreeNode<T>? _leftNode;
-            private MyTreeNode<T>? _rightNode;
+            private readonly T[] _tree;
             private T? _current;
             private int _index;
             internal Enumerator(MyTree<T> tree)
             {
-                _tree = tree;
-                _node = tree.Root;
+                _tree = tree.ToArray();
                 _current = default;
                 _index = 0;
             }
@@ -128,7 +124,7 @@ namespace Interface.MyCollection
             {
                 get
                 {
-                    if (_index == 0 || (_index == _tree.Count + 1))
+                    if (_index == 0 || (_index == _tree.Length))
                     {
                         throw new InvalidOperationException();
                     }
@@ -139,34 +135,17 @@ namespace Interface.MyCollection
 
             public bool MoveNext()
             {
-                return MoveLeftRight();
-            }
-            private bool MoveLeftRight()
-            {
-                if (_node == null || _index == _tree.Count)
+                if (_index < _tree.Length)
                 {
-                    _index = _tree.Count + 1;
-                    return false;
+                    _current = _tree[_index++];
+                    return true;
                 }
-                if (_node.Left == null && _node.Right == null)
-
-
-                ++_index;
-                _current = _node.Item;
-                _node = _node.Left;
-                if (_node == _tree.Root)
-                {
-                    _node = null;
-                }
-                return true;
+                return false;
             }
-
+            
             void IEnumerator.Reset()
             {
                 _current = default;
-                _node = _tree.Root;
-                _leftNode = null;
-                _rightNode = null;
                 _index = 0;
             }
 

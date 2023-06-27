@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Interface.InterfaceCollection;
@@ -111,6 +114,82 @@ namespace Interface.MyCollection
                 _count++;
             }
             else { throw new IndexOutOfRangeException(); }
+        }
+
+        public void Sort(IComparer<T>? comparer = null)
+        {
+            if (_arr == null) throw new ArgumentNullException();
+            if (this[0] is IComparable<T>)
+            {
+                BubbleSort(this, comparer);
+            }
+        }
+        private void BubbleSort(MyList<T> arr, IComparer<T>? comparer)
+        {
+
+            if (arr == null)
+                return;
+            else if(comparer != null)
+            {
+                T temp;
+                for (int i = 0; i < Count - 1; i++)
+                {
+                    for (int j = 0; j < Count - i - 1; j++)
+                    {
+                        if (comparer.Compare(arr[j],arr[j + 1]) > 0)
+                        {
+                            temp = arr[j];
+                            arr[j] = arr[j + 1];
+                            arr[j + 1] = temp;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                IComparable<T>? comparer1;
+                T temp;
+                for (int i = 0; i < Count - 1; i++)
+                {
+                    for (int j = 0; j < Count - i - 1; j++)
+                    {
+                        comparer1 = arr[j] as IComparable<T>;
+                        
+                        if (comparer1.CompareTo(arr[j + 1]) > 0)
+                        {
+                            temp = arr[j];
+                            arr[j] = arr[j + 1];
+                            arr[j + 1] = temp;
+                        }
+                    }
+                }
+            }
+        }
+
+        public int BinarySearch(T? item)
+        {
+            Sort();
+            return BinarySearch(this, item);
+        }
+
+        private int BinarySearch(MyList<T>? arr, T? item)
+        {
+            IComparable<T>? comparer;
+            int low = 0;
+            int middle;
+            int high = Count - 1;
+            while (low <= high)
+            {
+                middle = low + (high - low) / 2;
+                comparer = arr[middle] as IComparable<T>;
+                if 
+                    (comparer.CompareTo(item) > 0) high = middle - 1;
+                else if 
+                    (comparer.CompareTo(item) < 0) low = middle + 1;
+                else 
+                    return middle;
+            }
+            return -1;
         }
 
         public void Remove(T? value)
