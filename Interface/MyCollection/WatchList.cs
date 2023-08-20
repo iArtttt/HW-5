@@ -17,7 +17,7 @@ namespace Interface.MyCollection
 
         public int Capaсity => _watchListList.Capaсity;
 
-        object? IMyList.this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        object? IMyList.this[int index] { get => this[index]; set => this[index] = (T)value; }
 
         private readonly MyList<T> _watchListList;
         public WatchList() 
