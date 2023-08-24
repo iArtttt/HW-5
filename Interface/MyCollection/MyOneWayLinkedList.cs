@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Interface.MyCollection
 {
-    internal class MyOneWayLinkedList <T> : IMyCollection<T>
+    public class MyOneWayLinkedList <T> : IMyCollection<T>
     {
         protected int _count = 0;
         internal MyOneWayLinkedListNode<T>? _head;
@@ -78,7 +78,7 @@ namespace Interface.MyCollection
                 MyOneWayLinkedListNode<T>? current = _head;
                 for (int i = 0; i < Count; i++)
                 {
-                    if (current.item.GetHashCode() == item.GetHashCode())
+                    if (current.Item.GetHashCode() == item.GetHashCode())
                         return true;
                     current = current.Next;
                 }
@@ -93,7 +93,7 @@ namespace Interface.MyCollection
                 MyOneWayLinkedListNode<T>? current = _head;
                 for (int i = 0; i < Count; i++)
                 {
-                    Arr[i] = current.item;
+                    Arr[i] = current.Item;
                     current = current.Next;
                 }
                 return Arr;
@@ -163,7 +163,7 @@ namespace Interface.MyCollection
                 }
 
                 ++_index;
-                _current = _node.item;
+                _current = _node.Item;
                 _node = _node.Next;
                 if (_node == _list._head)
                 {

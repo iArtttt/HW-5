@@ -5,26 +5,37 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Interface.MyCollection
 {
-    internal class MyQueue<T> : IMyCollection<T>
+    public class MyQueue<T> : IMyCollection<T>
     {
-        public int Count { get { return _arr.Count; } }
+        public int Count { get { return _size; } }
 
         private readonly MyList<T> _arr;
+        private int _head;
+        private int _size;
         public MyQueue()
         {
             _arr = new MyList<T>();
+            _head = 0;
+            _size = 0;
         }
-        public void Enqueue(T obj) => _arr.Add(obj);
+        public void Enqueue(T obj)
+        {
+            _arr.Add(obj);
+            _size++;
+        }
 
         public T Dequeue()
         {
-            if (_arr.Count > 0)
+
+            if (_size > 0)
             {
-                T obj = _arr[0];
-                _arr.RemoveAt(0);
+                T obj = _arr[_head];
+                MoveNext(ref _head);
+                _size--;
                 return obj;
             }
             return default;
@@ -32,7 +43,7 @@ namespace Interface.MyCollection
 
         public T Peek()
         {
-            if (_arr.Count > 0) return _arr[_arr.Count - 1];
+            if (_arr.Count > 0) return _arr[0];
             return default;
         }
 
@@ -40,8 +51,22 @@ namespace Interface.MyCollection
 
         public T[] ToArray() => _arr.ToArray();
 
-        public void Clear() => _arr.Clear();
+        public void Clear()
+        {
+            _arr.Clear();
+            _head = 0;
+            _size = 0;
+        }
 
+        private void MoveNext(ref int index)
+        {
+            int tmp = index + 1;
+            if (tmp == _arr.Count)
+            {
+                tmp = 0;
+            }
+            index = tmp;
+        }
         public IEnumerator<T> GetEnumerator() => _arr.GetEnumerator();
 
 

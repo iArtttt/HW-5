@@ -8,7 +8,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Interface.MyCollection
 {
-    internal class MyLinkedList<T> : MyOneWayLinkedList<T>
+    public class MyLinkedList<T> : MyOneWayLinkedList<T>
     {
         internal new MyLinkedListNode<T>? _head;
         public new MyLinkedListNode<T>? First { get { return _head; } }
@@ -86,15 +86,23 @@ namespace Interface.MyCollection
                     if (current.Item.Equals(item))
                     {
                         if (current == _head)
+                        {
                             RemoveFirst();
+                            break;
+                        }
                         else if (current == Last)
+                        {
                             RemoveLast();
+                            break;
+                        }
                         else
                         {
-                            current.Preveouse.Next = current.Next.Preveouse;
+                            current.Preveouse.Next = current.Next;
+                            current.Next.Preveouse = current.Preveouse;
                             current.Next = null;
                             current.Preveouse = null;
                             _count--;
+                            break;
                         }
                     }
                     current = current.Next;
@@ -127,7 +135,7 @@ namespace Interface.MyCollection
                 MyLinkedListNode<T>? current = _head;
                 for (int i = 0; i < Count; i++)
                 {
-                    if (current.Equals(item))
+                    if (current.Item.Equals(item))
                         return true;
                     current = current.Next;
                 }

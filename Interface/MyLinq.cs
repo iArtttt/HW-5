@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Interface
 {
-    internal static class MyLinq
+    public static class MyLinq
     {
         private class BaseEnumerable<T> : IEnumerable<T>
         {

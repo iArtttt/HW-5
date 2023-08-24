@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace Interface.MyCollection
 {
-    internal class MyStack<T> : IMyCollection<T>
+    public class MyStack<T> : IMyCollection<T>
     {
         public int Count { get { return _arr.Count; } }
 

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Interface.MyCollection
 {
-    internal sealed class MyLinkedListNode<T>
+    public sealed class MyLinkedListNode<T>
     {
         public MyLinkedListNode<T>? Next { get; set; }
         public MyLinkedListNode<T>? Preveouse { get; set; }
-        internal T Item { get; private set; }
+        public T Item { get; private set; }
 
         public MyLinkedListNode(T item)
         {

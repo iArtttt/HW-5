@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Interface.MyCollection
 {
-    internal class MyTree<T> : IMyCollection<T> where T: IComparable<T>
+    public class MyTree<T> : IMyCollection<T> where T: IComparable<T>
     {
         private int _count = 0;
         public int Count { get { return _count; } }

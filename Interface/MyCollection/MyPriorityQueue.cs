@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Interface.MyCollection
 {
-    internal class MyPriorityQueue<T> : IMyCollection<T>
+    public class MyPriorityQueue<T> : IMyCollection<T>
     {
         public int Count => _arr.Count;
 

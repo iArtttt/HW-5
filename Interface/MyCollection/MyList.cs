@@ -12,7 +12,7 @@ using Interface.InterfaceCollectionGeneric;
 
 namespace Interface.MyCollection
 {
-    internal class MyList<T> : IMyList<T>, IMyList
+    public class MyList<T> : IMyList<T>, IMyList
     {
         public T this[int index] 
         { 

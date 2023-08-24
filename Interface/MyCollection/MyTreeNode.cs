@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Interface.MyCollection
 {
-    internal class MyTreeNode<T>
+    public class MyTreeNode<T>
     {
         public MyTreeNode<T>? Left;
         public MyTreeNode<T>? Right;

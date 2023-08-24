@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Interface.MyCollection
 {
-    internal class WatchList<T> : IMyList<T>, IMyList
+    public class WatchList<T> : IMyList<T>, IMyList
     {
         public T this[int index] { get => _watchListList[index]; set => _watchListList[index] = value; }
 

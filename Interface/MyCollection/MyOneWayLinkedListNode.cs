@@ -7,19 +7,19 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Interface.MyCollection
 {
-    internal class MyOneWayLinkedListNode<T>
+    public class MyOneWayLinkedListNode<T>
     {
         public MyOneWayLinkedListNode<T>? Next { get; set; }
-        internal T item;
+        public T Item { get; set; }
 
         public MyOneWayLinkedListNode(T item)
         {
-            this.item = item;
+            Item = item;
         }
         public MyOneWayLinkedListNode(MyOneWayLinkedListNode<T> next, T item)
         {
             Next = next;
-            this.item = item;
+            Item = item;
         }        
     }
 }
